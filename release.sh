@@ -14,8 +14,10 @@ set_version() {
     DIR=$1
     VER=$2
 
-    sed -i -re "s|^(version):.+|\1: ${VER}|" ${DIR}/config.yaml
-    sed -i -re "s|^  (.+): \"(ghcr.io/0xvisualiris/bifrost):.+\"|  \1: \"\2:${VER}\"|" ${DIR}/build.yaml
+    # -i.bak works with both GNU and BSD (macOS) sed
+    sed -i.bak -E "s|^(version):.+|\1: ${VER}|" ${DIR}/config.yaml
+    sed -i.bak -E "s|^  (.+): \"(ghcr.io/0xvisualiris/bifrost):.+\"|  \1: \"\2:${VER}\"|" ${DIR}/build.yaml
+    rm -f ${DIR}/config.yaml.bak ${DIR}/build.yaml.bak
 }
 
 ./generate.py "$TARGET_DIR" templates/readme-stable.jinja "${FIRST_COMMIT}..master" > bifrost/README.md
@@ -24,5 +26,5 @@ set_version() {
 ./generate.py "$TARGET_DIR" templates/changelog-stable.jinja "${FIRST_COMMIT}..master" > bifrost/CHANGELOG.md
 ./generate.py "$TARGET_DIR" templates/changelog-dev.jinja    "${FIRST_COMMIT}..dev"    > bifrost-dev/CHANGELOG.md
 
-set_version bifrost master-2026-06-07
-set_version bifrost-dev dev-2026-08-14
+set_version bifrost master-2026-10-20
+set_version bifrost-dev dev-2026-10-20
